@@ -15,9 +15,17 @@ function Canned(dir, options) {
 }
 
 function matchFile(matchString, fname, method) {
-  return matchString.match(
-    new RegExp(fname + '\\.' + method + '\\.(.+)')
+  var match =  matchString.match(
+    new RegExp('([0-9]+\\.)*' + fname + '\\.' + method + '\\.(.+)')
   )
+  if (match) {
+    // ignore the first capture group
+    var mimetype = match[2] || match[1]
+    var filename = match[0]
+    return { fname: filename, mimetype: mimetype }
+  } else {
+    return false
+  }
 }
 
 function matchFileWithQuery(matchString) {
@@ -57,7 +65,7 @@ function getFileFromRequest(httpObj, files) {
   // if match regexp based on request to fname
   for (i = 0, e = files[i]; e != null; e = files[++i]) {
     m = matchFile(e, httpObj.fname, httpObj.method)
-    if (m) return { fname : m[0], mimetype : m[1] }
+    if (m) return { fname : m.fname, mimetype : m.mimetype }
   }
   return false
 }

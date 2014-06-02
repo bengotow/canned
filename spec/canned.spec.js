@@ -96,6 +96,14 @@ describe('canned', function () {
   })
 
   describe('resolve file paths', function () {
+    it('ignores prepended numbers to filenames', function (done) {
+      req.url = '/c'
+      res.end = function (content) {
+        expect(content).toContain('1._c.get.txt')
+        done()
+      }
+      can(req, res)
+    })
 
     it('loads index for /', function (done) {
       req.url = '/'
@@ -141,6 +149,7 @@ describe('canned', function () {
       }
       can(req, res)
     })
+
 
     it('looks for index file with query params', function (done) {
       req.url = '/?name=Superman'
